@@ -5,9 +5,9 @@
   "description":"Spa control",
   "repository": {
     "type":"git",
-    "url":"https://github.com/konsulten/ESPHomeSpa",
+    "url":"https://github.com/konsulten/ESPHomeSpa"
   },
   "dependencies":[],
   "frameworks":"arduino",
-  "platforms":"*",
+  "platforms":"*"
 }
