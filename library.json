@@ -1,0 +1,13 @@
+{
+  "name": "esphomespa",
+  "version":"0.0.1",
+  "author":"-",
+  "description":"Spa control",
+  "repository": {
+    "type":"git",
+    "url":"https://github.com/konsulten/ESPHomeSpa",
+  },
+  "dependencies":[],
+  "frameworks":"arduino",
+  "platforms":"*",
+}
