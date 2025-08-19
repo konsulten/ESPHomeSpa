@@ -39,6 +39,7 @@ namespace esphome
       void on_toggle_jet1();
       void on_toggle_jet2();
       void on_toggle_light();
+  void on_set_time(int hour, int minute);
       void register_binary_sensor_callback(uint8_t datapoint, const std::function<void(bool)> &func);
       void register_sensor_callback(uint8_t datapoint, const std::function<void(float)> &func);
       void on_set_temp(float temp);

@@ -615,6 +615,16 @@ namespace esphome
           }
         }
 
+        void BalboaSpa::on_set_time(int hour, int minute)
+        {
+          if (hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59)
+          {
+            sethour = static_cast<uint8_t>(hour);
+            setminute = static_cast<uint8_t>(minute);
+            send = 0x21; // mark for time update
+          }
+        }
+
         // void on_set_hour(int hour) {
         //   if(hour >= 0 || hour <= 23) {
         //     sethour = hour;
