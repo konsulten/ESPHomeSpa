@@ -32,6 +32,7 @@ namespace esphome
       void set_high_range_binary_sensor(binary_sensor::BinarySensor *high_range_binary_sensor);
   void set_hour_sensor(sensor::Sensor *hour_sensor) { this->hour_sensor_ = hour_sensor; }
   void set_minute_sensor(sensor::Sensor *minute_sensor) { this->minute_sensor_ = minute_sensor; }
+  void set_time_text_sensor(text_sensor::TextSensor *time_text_sensor) { this->time_text_sensor_ = time_text_sensor; }
       // void set_light_binary_sensor(binary_sensor::BinarySensor *blower_binary_sensor);
       // void set_jet1_binary_sensor(binary_sensor::BinarySensor *jet1_binary_sensor);
       // void set_jet2_binary_sensor(binary_sensor::BinarySensor *jet2_binary_sensor);
@@ -151,6 +152,7 @@ namespace esphome
       sensor::Sensor *hour_sensor_{nullptr};
       sensor::Sensor *minute_sensor_{nullptr};
       text_sensor::TextSensor *fault_sensor_{nullptr};
+  text_sensor::TextSensor *time_text_sensor_{nullptr};
     };
   }
 }

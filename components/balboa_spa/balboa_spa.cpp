@@ -326,6 +326,13 @@ namespace esphome
             hour_sensor_->publish_state(SpaState.hour);
           if (minute_sensor_ != nullptr)
             minute_sensor_->publish_state(SpaState.minutes);
+          if (time_text_sensor_ != nullptr)
+          {
+            char buf[6];
+            // Ensure 0-padded 24h HH:MM
+            snprintf(buf, sizeof(buf), "%02u:%02u", (unsigned)SpaState.hour, (unsigned)SpaState.minutes);
+            time_text_sensor_->publish_state(std::string(buf));
+          }
 
           // 10:Flag Byte 5 - Heating Mode
           switch (this->Q_in[10])

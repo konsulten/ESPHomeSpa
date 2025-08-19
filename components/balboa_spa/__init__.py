@@ -22,6 +22,7 @@ CONF_JET2_SWITCH = "jet2_binary_sensor"
 CONF_FAULT_TEXT_SENSOR = "fault_text_sensor"
 CONF_HOUR_SENSOR = "hour_sensor"
 CONF_MINUTE_SENSOR = "minute_sensor"
+CONF_TIME_TEXT_SENSOR = "time_text_sensor"
 
 CONFIG_SCHEMA = cv.Schema({
     cv.GenerateID(): cv.declare_id(BalboaSpa), 
@@ -44,6 +45,8 @@ CONFIG_SCHEMA = cv.Schema({
         sensor.sensor_schema(accuracy_decimals=0, unit_of_measurement="h").extend(),
     cv.Optional(CONF_MINUTE_SENSOR):
         sensor.sensor_schema(accuracy_decimals=0, unit_of_measurement="min").extend(),
+    cv.Optional(CONF_TIME_TEXT_SENSOR):
+        text_sensor.text_sensor_schema().extend(),
 }).extend(cv.COMPONENT_SCHEMA).extend(uart.UART_DEVICE_SCHEMA)
 
 async def to_code(config):
@@ -91,6 +94,10 @@ async def to_code(config):
         conf = config[CONF_MINUTE_SENSOR]
         sens = await sensor.new_sensor(conf)
         cg.add(var.set_minute_sensor(sens))
+    if CONF_TIME_TEXT_SENSOR in config:
+        conf = config[CONF_TIME_TEXT_SENSOR]
+        sens = await text_sensor.new_text_sensor(conf)
+        cg.add(var.set_time_text_sensor(sens))
     # if CONF_LIGHT_SWITCH in config:
     #     conf = config[CONF_LIGHT_SWITCH]
     #     switch_ = await switch.new_switch(conf)
