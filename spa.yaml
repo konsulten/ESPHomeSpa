@@ -78,6 +78,13 @@ balboa_spa:
 api:
   encryption:
     key: !secret api_key
+  services:
+    - service: set_spa_time
+      variables:
+        hour: int
+        minute: int
+      then:
+        - lambda: 'id(balboa_spa_id).on_set_time(hour, minute);'
 
 ota:
   platform: esphome
