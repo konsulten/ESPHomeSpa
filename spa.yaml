@@ -87,6 +87,11 @@ api:
         minute: int
       then:
         - lambda: 'id(balboa_spa_id).on_set_time(hour, minute);'
+    - service: set_heater_enabled
+      variables:
+        enabled: bool
+      then:
+        - lambda: 'id(balboa_spa_id).set_heater_enabled(enabled);'
 
 ota:
   platform: esphome
