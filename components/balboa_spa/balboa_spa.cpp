@@ -52,40 +52,68 @@ namespace esphome
 
     void BalboaSpa::register_sensor_callback(uint8_t datapoint, const std::function<void(float)> &func)
     {
+      auto attach = [&](std::function<void(float)> &slot) {
+        if (!slot)
+        {
+          slot = func;
+        }
+        else
+        {
+          auto previous = slot;
+          slot = [previous, func](float value) {
+            previous(value);
+            func(value);
+          };
+        }
+      };
       switch (datapoint)
       {
       case 40:
-        this->target_temp_state_update_ = func;
+        attach(this->target_temp_state_update_);
         break;
       case 41:
-        this->current_temp_state_update_ = func;
+        attach(this->current_temp_state_update_);
         break;
       }
     }
         void BalboaSpa::register_binary_sensor_callback(uint8_t datapoint, const std::function<void(bool)> &func)
         {
+          auto attach = [&](std::function<void(bool)> &slot) {
+            if (!slot)
+            {
+              slot = func;
+            }
+            else
+            {
+              auto previous = slot;
+              slot = [previous, func](bool state) {
+                previous(state);
+                func(state);
+              };
+            }
+          };
           switch (datapoint)
           {
           case 20:
-            this->light_state_update_ = func;
+            attach(this->light_state_update_);
             break;
           case 21:
-            this->heater_state_update_ = func;
+            attach(this->heater_state_update_);
             break;
           case 22:
-            this->circulation_pump_state_update_ = func;
+            attach(this->circulation_pump_state_update_);
             break;
           case 23:
-            this->rest_state_update_ = func;
+            attach(this->rest_state_update_);
             break;
           case 24:
-            this->jet1_state_update_ = func;
+            attach(this->jet1_state_update_);
             break;
           case 25:
-            this->jet2_state_update_ = func;
+            attach(this->jet2_state_update_);
             break;
           case 26:
-            this->blower_state_update_ = func;
+            attach(this->blower_state_update_);
             break;
           }
         }
@@ -275,6 +303,7 @@ namespace esphome
               this->rest_state_update_(true);
             break;
           }
+          this->rest_state_known_ = true;
 
           // 15:Flags Byte 10 / Heat status, Temp Range
           d = bitRead(this->Q_in[15], 4);
@@ -504,6 +533,31 @@ namespace esphome
             setminute = static_cast<uint8_t>(minute);
             send = 0x21; // mark for time update
           }
+        }
+
+        void BalboaSpa::set_heater_enabled(bool enabled)
+        {
+          if (!this->rest_state_known_)
+          {
+            ESP_LOGW(TAG, "Cannot change heater state: current rest/ready mode unknown");
+            return;
+          }
+
+          bool heating_enabled = (this->SpaState.restmode == 0);
+          if (enabled == heating_enabled)
+          {
+            ESP_LOGD(TAG, "Heater already %s", enabled ? "enabled" : "disabled");
+            return;
+          }
+
+          if (this->send != 0x00)
+          {
+            ESP_LOGW(TAG, "Pending command 0x%02X in queue; heater toggle skipped", this->send);
+            return;
+          }
+
+          this->send = 0x51;
+          ESP_LOGI(TAG, "Requesting heater %s", enabled ? "enable" : "disable");
         }
 
   // Removed unused setters and toggles

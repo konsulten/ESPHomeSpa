@@ -19,6 +19,7 @@ namespace esphome
         auto traits = climate::ClimateTraits();
         traits.set_supports_action(true);
         traits.add_supported_mode(climate::CLIMATE_MODE_HEAT);
+        traits.add_supported_mode(climate::CLIMATE_MODE_OFF);
         traits.set_supports_current_temperature(true);
         traits.set_visual_min_temperature(26.0);
         traits.set_visual_max_temperature(40.0);
@@ -32,6 +33,10 @@ namespace esphome
       }
     protected:
       BalboaSpa *parent_{nullptr};
+      bool heater_active_{false};
+      bool rest_mode_{false};
+
+      void update_operating_state_();
      };
   }
 }
