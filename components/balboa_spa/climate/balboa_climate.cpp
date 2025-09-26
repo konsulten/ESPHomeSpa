@@ -21,6 +21,8 @@ namespace esphome
     // }
     void BalboaClimate::setup()
     {
+      this->mode = climate::CLIMATE_MODE_HEAT;
+      this->action = climate::CLIMATE_ACTION_IDLE;
       this->parent_->register_sensor_callback(40, [this](const float temp)
                                               { this->target_temperature = temp; this->publish_state(); });
       this->parent_->register_sensor_callback(41, [this](const float temp)
@@ -28,7 +30,8 @@ namespace esphome
 
       // Register callback for heater state
       this->parent_->register_binary_sensor_callback(21, [this](const bool state) {
-        this->mode = state ? climate::CLIMATE_MODE_HEAT : climate::CLIMATE_MODE_OFF;
+        this->mode = climate::CLIMATE_MODE_HEAT;
+        this->action = state ? climate::CLIMATE_ACTION_HEATING : climate::CLIMATE_ACTION_IDLE;
         this->publish_state();
       });
 
