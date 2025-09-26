@@ -5,20 +5,6 @@ namespace esphome
   {
     static const char *TAG = "balboa_spa.climate";
 
-    // void BalboaClimate::loop() {
-    //   bool changed_state = false;
-    //   if (this->parent_->target_temp != NAN && this->target_temperature != this->parent_->target_temp){
-    //    this->target_temperature = this->parent_->target_temp;
-    //    changed_state = true;
-    //   }
-    //   if (this->parent_->temperature != NAN && this->current_temperature != this->parent_->temperature){
-    //    this->current_temperature = this->parent_->temperature;
-    //    changed_state = true;
-    //   }
-    //   if (changed_state) {
-    //    this->publish_state();
-    //   }
-    // }
     void BalboaClimate::setup()
     {
       this->mode = climate::CLIMATE_MODE_HEAT;

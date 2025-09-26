@@ -7,66 +7,7 @@ namespace esphome
 
     // Define the logger tag
     static const char *TAG = "balboa_spa";
-    // float get_setup_priority() const override { return esphome::setup_priority::LATE; }
-
-    // char have_config = 0; //stages: 0-> want it; 1-> requested it; 2-> got it; 3-> further processed it
-    // char have_faultlog = 0; //stages: 0-> want it; 1-> requested it; 2-> got it; 3-> further processed it
-    // char have_filtersettings = 0; //stages: 0-> want it; 1-> requested it; 2-> got it; 3-> further processed it
-    // char faultlog_minutes = 0; //temp logic so we only get the fault log once per 5 minutes
-    // char filtersettings_minutes = 0; //temp logic so we only get the filter settings once per 5 minutes
-
-    // struct {
-    //   uint8_t jet1 :2;
-    //   uint8_t jet2 :2;
-    //   uint8_t blower :1;
-    //   uint8_t light :1;
-    //   uint8_t restmode:1;
-    //   uint8_t highrange:1;
-    //   uint8_t heater:1;
-    //   uint8_t hour :5;
-    //   uint8_t minutes :6;
-    //   uint8_t circ :1;
-    // } SpaState;
-
-    // struct {
-    //   uint8_t pump1 :2; //this could be 1=1 speed; 2=2 speeds
-    //   uint8_t pump2 :2;
-    //   uint8_t pump3 :2;
-    //   uint8_t pump4 :2;
-    //   uint8_t pump5 :2;
-    //   uint8_t pump6 :2;
-    //   uint8_t light1 :1;
-    //   uint8_t light2 :1;
-    //   uint8_t circ :1;
-    //   uint8_t blower :1;
-    //   uint8_t mister :1;
-    //   uint8_t aux1 :1;
-    //   uint8_t aux2 :1;
-    //   uint8_t temp_scale :1; //0 -> Farenheit, 1-> Celcius
-    // } SpaConfig;
-
-    // struct {
-    //   uint8_t totEntry :5;
-    //   uint8_t currEntry :5;
-    //   uint8_t faultCode :6;
-    //   String faultMessage;
-    //   uint8_t daysAgo :8;
-    //   uint8_t hour :5;
-    //   uint8_t minutes :6;
-    // } SpaFaultLog;
-
-    // struct {
-    //   uint8_t filt1Hour :5;
-    //   uint8_t filt1Minute :6;
-    //   uint8_t filt1DurationHour :5;
-    //   uint8_t filt1DurationMinute :6;
-    //   uint8_t filt2Enable :1;
-    //   uint8_t filt2Hour :5;
-    //   uint8_t filt2Minute :6;
-    //   uint8_t filt2DurationHour :5;
-    //   uint8_t filt2DurationMinute :6;
-
-    // } SpaFilterSettings;
+  // Setup priority and long commented-out blocks removed for clarity
 
     void BalboaSpa::set_temp_sensor(sensor::Sensor *temp_sensor)
     {
@@ -222,17 +163,7 @@ namespace esphome
           this->Q_out.clear();
         }
 
-        // void BalboaSpa::print_msg(CircularBuffer<uint8_t, 35> &data) {
-        //   std::string s;
-        //   //for (i = 0; i < (this->Q_in[1] + 2); i++) {
-        //   for (i = 0; i < data.size(); i++) {
-        //     x = this->Q_in[i];
-        //     // if (x < 0x0A) s += "0";
-        //     // s += String(x, HEX);
-        //     // s += " ";
-        //   }
-        //   yield();
-        // }
+  // Removed unused debug print helper
 
         void BalboaSpa::decodeSettings()
         {
@@ -270,7 +201,6 @@ namespace esphome
 
         void BalboaSpa::decodeState()
         {
-          // std::string s;
           float e = 0.0;
           float d = 0.0;
           float c = 0.0;
@@ -278,10 +208,6 @@ namespace esphome
           // 25:Flag Byte 20 - Set Temperature
           e = this->Q_in[25];
           d = e / 2;
-
-          // ESP_LOGD("Spa/target_temp/state", String(d, 2).c_str());
-          // if (target_temp_sensor_ != nullptr)
-          // this.target_temp = d;
 
           if (this->target_temp_state_update_ != nullptr)
           {
@@ -309,16 +235,11 @@ namespace esphome
           {
             d = 0;
           }
-          // REMARK Move upper publish to HERE to get 0 for unknown temperature
+          // Publish 0 when unknown temperature
 
           // 8:Flag Byte 3 Hour & 9:Flag Byte 4 Minute => Time
-          // if (this->Q_in[8] < 10) s = "0"; else s = "";
           SpaState.hour = this->Q_in[8];
-          // s += String(this->Q_in[8]) + ":";
-          // if (this->Q_in[9] < 10) s += "0";
-          // s += String(this->Q_in[9]);
           SpaState.minutes = this->Q_in[9];
-          // ESP_LOGD("Spa/time/state", s.c_str());
           sethour = SpaState.hour;
           setminute = SpaState.minutes;
           if (hour_sensor_ != nullptr)
@@ -477,10 +398,6 @@ namespace esphome
 
         void BalboaSpa::decodeFilterSettings()
         {
-          // std::string s;
-          // std::string d;
-          // std::string payld;
-
           SpaFilterSettings.filt1Hour = this->Q_in[5];
           SpaFilterSettings.filt1Minute = this->Q_in[6];
           SpaFilterSettings.filt1DurationHour = this->Q_in[7];
@@ -491,34 +408,7 @@ namespace esphome
           SpaFilterSettings.filt2DurationHour = this->Q_in[11];
           SpaFilterSettings.filt2DurationMinute = this->Q_in[12];
 
-          // //Filter 1 time conversion
-          // if (SpaFilterSettings.filt1Hour < 10) s = "0"; else s = "";
-          // s = String(SpaFilterSettings.filt1Hour) + ":";
-          // if (SpaFilterSettings.filt1Minute < 10) s += "0";
-          // s += String(SpaFilterSettings.filt1Minute);
-
-          // if (SpaFilterSettings.filt1DurationHour < 10) d = "0"; else d = "";
-          // d = String(SpaFilterSettings.filt1DurationHour) + ":";
-          // if (SpaFilterSettings.filt1DurationMinute < 10) d += "0";
-          // d += String(SpaFilterSettings.filt1DurationMinute);
-
-          // payld = "{\"start\":\""+s+"\",\"duration\":\""+d+"\"}";
-          // ESP_LOGD("Spa/filter1/state", payld.c_str());
-
-          // //Filter 2 time conversion
-          // if (SpaFilterSettings.filt2Hour < 10) s = "0"; else s = "";
-          // s += String(SpaFilterSettings.filt2Hour) + ":";
-          // if (SpaFilterSettings.filt2Minute < 10) s += "0";
-          // s += String(SpaFilterSettings.filt2Minute);
-
-          // if (SpaFilterSettings.filt2DurationHour < 10) d = "0"; else d = "";
-          // d += String(SpaFilterSettings.filt2DurationHour) + ":";
-          // if (SpaFilterSettings.filt2DurationMinute < 10) d += "0";
-          // d += String(SpaFilterSettings.filt2DurationMinute);
-          // if ((int)(SpaFilterSettings.filt2Enable) == 1) ESP_LOGD("Spa/filter2_enabled/state", STRON); else ESP_LOGD("Spa/filter2_enabled/state", STROFF);
-
-          // payld = "{\"start\":\""+s+"\",\"duration\":\""+d+"\"}";
-          // ESP_LOGD("Spa/filter2/state", payld.c_str());
+          // Removed commented-out string formatting/debug payload
 
           have_filtersettings = 2;
         }
@@ -595,19 +485,11 @@ namespace esphome
           SpaFaultLog.daysAgo = this->Q_in[8];
           SpaFaultLog.hour = this->Q_in[9];
           SpaFaultLog.minutes = this->Q_in[10];
-          // ESP_LOGD("Spa/fault/Entries", String(SpaFaultLog.totEntry).c_str());
-          // ESP_LOGD("Spa/fault/Entry", String(SpaFaultLog.currEntry).c_str());
-          // ESP_LOGD("Spa/fault/Code", String(SpaFaultLog.faultCode).c_str());
-          // ESP_LOGD("Spa/fault/Message", SpaFaultLog.faultMessage.c_str());
-          // ESP_LOGD("Spa/fault/DaysAgo", String(SpaFaultLog.daysAgo).c_str());
-          // ESP_LOGD("Spa/fault/Hours", String(SpaFaultLog.hour).c_str());
-          // ESP_LOGD("Spa/fault/Minutes", String(SpaFaultLog.minutes).c_str());
           have_faultlog = 2;
-          // ESP_LOGD("Spa/debug/have_faultlog", "have the faultlog, #2");
         }
         void BalboaSpa::on_set_temp(float temp)
         {
-          if (temp >= 26 || temp <= 40)
+          if (temp >= 26 && temp <= 40)
           {
             settemp = temp * 2;
             send = 0xff;
@@ -624,25 +506,7 @@ namespace esphome
           }
         }
 
-        // void on_set_hour(int hour) {
-        //   if(hour >= 0 || hour <= 23) {
-        //     sethour = hour;
-        //     send = 0x21;
-        //   }
-        // }
-
-        // void on_set_minute(int minute) {
-        //   if(minute >= 0 || minute <= 59) {
-        //     setminute = minute;
-        //     send = 0x21;
-        //   }
-        // }
-        // void on_toggle_heatingmode() {
-        //   send = 0x51;
-        // }
-        // void on_toggle_range() {
-        //   send = 0x50;
-        // }
+  // Removed unused setters and toggles
         void BalboaSpa::on_toggle_light()
         {
           send = 0x11;
@@ -813,12 +677,7 @@ namespace esphome
                   decodeFilterSettings();
                 }
               }
-              else
-              {
-                // DEBUG for finding meaning
-                // if (this->Q_in[2] & 0xFE || this->Q_in[2] == id)
-                // print_msg(this->Q_in);
-              }
+              // Other messages ignored
 
               // Clean up queue
               yield();

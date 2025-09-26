@@ -1,9 +1,9 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import uart, sensor, binary_sensor, switch, text_sensor
+from esphome.components import uart, sensor, binary_sensor, text_sensor
 from esphome.const import CONF_ID, DEVICE_CLASS_TEMPERATURE, UNIT_CELSIUS, STATE_CLASS_MEASUREMENT
 DEPENDENCIES = ['uart']
-AUTO_LOAD = ['uart', 'switch', 'sensor', 'text_sensor', 'binary_sensor']
+AUTO_LOAD = ['uart', 'sensor', 'text_sensor', 'binary_sensor']
 
 balboa_spa_ns = cg.esphome_ns.namespace('balboa_spa')
 
@@ -16,9 +16,6 @@ CONF_HEATER_SENSOR = "heater_binary_sensor"
 CONF_CIRC_SENSOR = "circ_binary_sensor"
 CONF_BLOWER_SENSOR ="blower_binary_sensor"
 CONF_REST_SENSOR ="rest_binary_sensor"
-CONF_LIGHT_SWITCH = "light_binary_sensor"
-CONF_JET1_SWITCH = "jet1_binary_sensor"
-CONF_JET2_SWITCH = "jet2_binary_sensor"
 CONF_FAULT_TEXT_SENSOR = "fault_text_sensor"
 CONF_HOUR_SENSOR = "hour_sensor"
 CONF_MINUTE_SENSOR = "minute_sensor"
@@ -26,9 +23,6 @@ CONF_TIME_TEXT_SENSOR = "time_text_sensor"
 
 CONFIG_SCHEMA = cv.Schema({
     cv.GenerateID(): cv.declare_id(BalboaSpa), 
-    # cv.Required("jet_pumps"): cv.ensure_list(switch.SWITCH_SCHEMA.extend({
-    #     cv.GenerateID(): cv.declare_id(switch.Switch),
-    # })),
     cv.Optional(CONF_TEMP_SENSOR):
         sensor.sensor_schema(device_class=DEVICE_CLASS_TEMPERATURE,unit_of_measurement=UNIT_CELSIUS,accuracy_decimals=1,state_class=STATE_CLASS_MEASUREMENT).extend(), 
     cv.Optional(CONF_CIRC_SENSOR):
@@ -56,11 +50,6 @@ async def to_code(config):
     await uart.register_uart_device(var, config)
 
 
-    # Handle jet pumps (switches)
-    # for jet_pump_config in config["jet_pumps"]:
-    #     jet_pump = cg.new_Pvariable(jet_pump_config[CONF_ID])
-    #     await switch.register_switch(jet_pump, jet_pump_config)
-    #     cg.add(var.add_jet_pump_switch(jet_pump))
 
     if CONF_TEMP_SENSOR in config:
         conf = config[CONF_TEMP_SENSOR]
@@ -98,15 +87,3 @@ async def to_code(config):
         conf = config[CONF_TIME_TEXT_SENSOR]
         sens = await text_sensor.new_text_sensor(conf)
         cg.add(var.set_time_text_sensor(sens))
-    # if CONF_LIGHT_SWITCH in config:
-    #     conf = config[CONF_LIGHT_SWITCH]
-    #     switch_ = await switch.new_switch(conf)
-    #     cg.add(var.set_light_switch(switch_))
-    # if CONF_JET1_SWITCH in config:
-    #     conf = config[CONF_JET1_SWITCH]
-    #     switch_ = await switch.new_switch(conf)
-    #     cg.add(var.set_jet1_switch(switch_))
-    # if CONF_JET2_SWITCH in config:
-    #     conf = config[CONF_JET2_SWITCH]
-    #     switch_ = await switch.new_switch(conf)
-    #     cg.add(var.set_jet2_switch(switch_))

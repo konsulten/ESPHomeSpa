@@ -5,7 +5,6 @@
 #include "esphome/components/uart/uart.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
-#include "esphome/components/switch/switch.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/core/log.h"
 #define STROFF "OFF"
@@ -30,9 +29,6 @@ namespace esphome
   void set_hour_sensor(sensor::Sensor *hour_sensor) { this->hour_sensor_ = hour_sensor; }
   void set_minute_sensor(sensor::Sensor *minute_sensor) { this->minute_sensor_ = minute_sensor; }
   void set_time_text_sensor(text_sensor::TextSensor *time_text_sensor) { this->time_text_sensor_ = time_text_sensor; }
-      // void set_light_binary_sensor(binary_sensor::BinarySensor *blower_binary_sensor);
-      // void set_jet1_binary_sensor(binary_sensor::BinarySensor *jet1_binary_sensor);
-      // void set_jet2_binary_sensor(binary_sensor::BinarySensor *jet2_binary_sensor);
       void on_toggle_jet1();
       void on_toggle_jet2();
       void on_toggle_light();
@@ -54,9 +50,9 @@ namespace esphome
       std::function<void(bool)>  blower_state_update_{nullptr};
       std::function<void(float)>  current_temp_state_update_{nullptr};
       std::function<void(float)>  target_temp_state_update_{nullptr};
-      CircularBuffer<uint8_t, 35> Q_in;
-      CircularBuffer<uint8_t, 35> Q_out;
-      uint8_t x, i, j;
+  CircularBuffer<uint8_t, 35> Q_in;
+  CircularBuffer<uint8_t, 35> Q_out;
+  uint8_t x, i;
 
       uint8_t last_state_crc = 0x00;
       uint8_t send = 0x00;
@@ -68,8 +64,7 @@ namespace esphome
       char have_config = 0;
       char have_faultlog = 0;
       char have_filtersettings = 0;
-      char faultlog_minutes = 0;
-      char filtersettings_minutes = 0;
+  // Removed unused minute throttling variables
 
       struct
       {
@@ -131,7 +126,6 @@ namespace esphome
       void ID_request();
       void ID_ack();
       void rs485_send();
-      // void print_msg(CircularBuffer<uint8_t, 35> &data);
       void decodeSettings();
       void decodeState();
       void decodeFilterSettings();
@@ -143,10 +137,6 @@ namespace esphome
       binary_sensor::BinarySensor *blower_binary_sensor_{nullptr};
       binary_sensor::BinarySensor *rest_binary_sensor_{nullptr};
       binary_sensor::BinarySensor *high_range_binary_sensor_{nullptr};
-      binary_sensor::BinarySensor *light_binary_sensor_{nullptr};
-      binary_sensor::BinarySensor *jet1_binary_sensor_{nullptr};
-      binary_sensor::BinarySensor *jet2_binary_sensor_{nullptr};
-      sensor::Sensor *target_temp_sensor_{nullptr};
       sensor::Sensor *hour_sensor_{nullptr};
       sensor::Sensor *minute_sensor_{nullptr};
       text_sensor::TextSensor *fault_sensor_{nullptr};
