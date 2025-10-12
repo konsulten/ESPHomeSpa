@@ -295,6 +295,10 @@ namespace esphome
               this->rest_state_update_(0);
             if (this->heating_enabled_state_update_ != nullptr)
               this->heating_enabled_state_update_(true);
+            if (this->heating_status_text_sensor_ != nullptr)
+            {
+              this->heating_status_text_sensor_->publish_state(SpaState.heater ? std::string("enabled • heating") : std::string("enabled • idle"));
+            }
             break;
           case 3: // Ready-in-Rest
             SpaState.restmode = 0;
@@ -302,6 +306,10 @@ namespace esphome
               this->rest_state_update_(false);
             if (this->heating_enabled_state_update_ != nullptr)
               this->heating_enabled_state_update_(true);
+            if (this->heating_status_text_sensor_ != nullptr)
+            {
+              this->heating_status_text_sensor_->publish_state(SpaState.heater ? std::string("enabled • heating") : std::string("enabled • idle"));
+            }
             break;
           case 1:
             ESP_LOGD("Spa/heatingmode/state", STROFF); // Rest
@@ -310,6 +318,10 @@ namespace esphome
               this->rest_state_update_(true);
             if (this->heating_enabled_state_update_ != nullptr)
               this->heating_enabled_state_update_(false);
+            if (this->heating_status_text_sensor_ != nullptr)
+            {
+              this->heating_status_text_sensor_->publish_state("disabled (rest)");
+            }
             break;
           }
           this->rest_state_known_ = true;
@@ -322,6 +334,13 @@ namespace esphome
             if (this->heater_state_update_ != nullptr)
               this->heater_state_update_(false);
             SpaState.heater = 0;
+            if (this->heating_status_text_sensor_ != nullptr)
+            {
+              if (SpaState.restmode)
+                this->heating_status_text_sensor_->publish_state("disabled (rest)");
+              else
+                this->heating_status_text_sensor_->publish_state("enabled • idle");
+            }
           }
           else if (d == 1 || d == 2)
           {
@@ -329,6 +348,13 @@ namespace esphome
             if (this->heater_state_update_ != nullptr)
               this->heater_state_update_(true);
             SpaState.heater = 1;
+            if (this->heating_status_text_sensor_ != nullptr)
+            {
+              if (SpaState.restmode)
+                this->heating_status_text_sensor_->publish_state("disabled (rest)");
+              else
+                this->heating_status_text_sensor_->publish_state("enabled • heating");
+            }
           }
           d = bitRead(this->Q_in[15], 2);
           if (d == 0)
