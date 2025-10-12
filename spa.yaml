@@ -67,6 +67,9 @@ binary_sensor:
   - platform: balboa_spa
     name: "Blower"
     binary_sensor_datapoint: 26
+  - platform: balboa_spa
+    name: "Heating Enabled"
+    binary_sensor_datapoint: 27
 
 balboa_spa:
   id: balboa_spa_id

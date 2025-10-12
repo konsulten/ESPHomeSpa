@@ -115,6 +115,9 @@ namespace esphome
           case 26:
             attach(this->blower_state_update_);
             break;
+          case 27:
+            attach(this->heating_enabled_state_update_);
+            break;
           }
         }
 
@@ -290,17 +293,23 @@ namespace esphome
             SpaState.restmode = 0;
             if (this->rest_state_update_ != nullptr)
               this->rest_state_update_(0);
+            if (this->heating_enabled_state_update_ != nullptr)
+              this->heating_enabled_state_update_(true);
             break;
           case 3: // Ready-in-Rest
             SpaState.restmode = 0;
             if (this->rest_state_update_ != nullptr)
               this->rest_state_update_(false);
+            if (this->heating_enabled_state_update_ != nullptr)
+              this->heating_enabled_state_update_(true);
             break;
           case 1:
             ESP_LOGD("Spa/heatingmode/state", STROFF); // Rest
             SpaState.restmode = 1;
             if (this->rest_state_update_ != nullptr)
               this->rest_state_update_(true);
+            if (this->heating_enabled_state_update_ != nullptr)
+              this->heating_enabled_state_update_(false);
             break;
           }
           this->rest_state_known_ = true;
