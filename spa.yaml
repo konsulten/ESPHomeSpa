@@ -78,6 +78,8 @@ balboa_spa:
     name: "Fault Message"
   time_text_sensor:
     name: "Spa Time"
+  heating_status_text_sensor:
+    name: "Heating Status"
   
 
 api:
