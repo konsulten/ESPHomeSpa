@@ -49,6 +49,7 @@ namespace esphome
       std::function<void(bool)>  heater_state_update_{nullptr};
       std::function<void(bool)>  circulation_pump_state_update_{nullptr};
       std::function<void(bool)>  rest_state_update_{nullptr};
+  std::function<void(bool)>  heating_enabled_state_update_{nullptr};
       std::function<void(bool)>  jet1_state_update_{nullptr};
       std::function<void(bool)>  jet2_state_update_{nullptr};
       std::function<void(bool)>  blower_state_update_{nullptr};
