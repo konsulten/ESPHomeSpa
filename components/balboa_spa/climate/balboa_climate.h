@@ -17,9 +17,10 @@ namespace esphome
       climate::ClimateTraits traits() override
       {
         auto traits = climate::ClimateTraits();
-        traits.set_supports_action(true);
+        traits.add_feature_flags(
+          esphome::climate::CLIMATE_FEATURE_ACTION |
+          esphome::climate::CLIMATE_FEATURE_CURRENT_TEMPERATURE);
         traits.add_supported_mode(climate::CLIMATE_MODE_HEAT);
-        traits.set_supports_current_temperature(true);
         traits.set_visual_min_temperature(26.0);
         traits.set_visual_max_temperature(40.0);
         traits.set_visual_temperature_step(0.5);
