@@ -1,4 +1,5 @@
 #include "balboa_spa.h"
+#include "esphome/core/ring_buffer.h"
 
 namespace esphome
 {
@@ -147,7 +148,7 @@ namespace esphome
           }
         }
 
-        uint8_t BalboaSpa::crc8(CircularBuffer<uint8_t, 35> & data)
+        uint8_t BalboaSpa::crc8(RingBuffer<uint8_t, 35> & data)
         {
           unsigned long crc;
           int i, bit;
@@ -220,7 +221,7 @@ namespace esphome
           this->Q_out.clear();
         }
 
-        // void BalboaSpa::print_msg(CircularBuffer<uint8_t, 35> &data) {
+        // void BalboaSpa::print_msg(RingBuffer<uint8_t, 35> &data) {
         //   std::string s;
         //   //for (i = 0; i < (this->Q_in[1] + 2); i++) {
         //   for (i = 0; i < data.size(); i++) {
