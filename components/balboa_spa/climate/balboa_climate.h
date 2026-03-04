@@ -18,8 +18,8 @@ namespace esphome
       {
         auto traits = climate::ClimateTraits();
         traits.add_feature_flags(
-          esphome::climate::CLIMATE_FEATURE_ACTION |
-          esphome::climate::CLIMATE_FEATURE_CURRENT_TEMPERATURE);
+          esphome::climate::CLIMATE_SUPPORTS_ACTION |
+          esphome::climate::CLIMATE_SUPPORTS_CURRENT_TEMPERATURE);
         traits.add_supported_mode(climate::CLIMATE_MODE_HEAT);
         traits.set_visual_min_temperature(26.0);
         traits.set_visual_max_temperature(40.0);
