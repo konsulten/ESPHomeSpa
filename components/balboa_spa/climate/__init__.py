@@ -9,6 +9,7 @@ BalboaClimate = balboa_spa_ns.class_("BalboaClimate", climate.Climate, cg.Compon
 
 CONFIG_SCHEMA = cv.All(
     climate.climate_schema(BalboaClimate)
+    .extend({cv.GenerateID(CONF_BALBOA_SPA_ID): cv.use_id(BalboaSpa)})
     .extend(cv.COMPONENT_SCHEMA)
 )
 async def to_code(config):
