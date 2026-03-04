@@ -148,7 +148,7 @@ namespace esphome
           }
         }
 
-        uint8_t BalboaSpa::crc8(RingBuffer<uint8_t, 35> & data)
+        uint8_t BalboaSpa::crc8(const std::vector<uint8_t> &data)
         {
           unsigned long crc;
           int i, bit;
@@ -177,21 +177,21 @@ namespace esphome
 
         void BalboaSpa::ID_request()
         {
-          this->Q_out.push(0xFE);
-          this->Q_out.push(0xBF);
-          this->Q_out.push(0x01);
-          this->Q_out.push(0x02);
-          this->Q_out.push(0xF1);
-          this->Q_out.push(0x73);
+          this->Q_out.push_back(0xFE);
+          this->Q_out.push_back(0xBF);
+          this->Q_out.push_back(0x01);
+          this->Q_out.push_back(0x02);
+          this->Q_out.push_back(0xF1);
+          this->Q_out.push_back(0x73);
 
           rs485_send();
         }
 
         void BalboaSpa::ID_ack()
         {
-          this->Q_out.push(id);
-          this->Q_out.push(0xBF);
-          this->Q_out.push(0x03);
+          this->Q_out.push_back(id);
+          this->Q_out.push_back(0xBF);
+          this->Q_out.push_back(0x03);
 
           rs485_send();
         }
@@ -199,14 +199,14 @@ namespace esphome
         void BalboaSpa::rs485_send()
         {
           // Add telegram length
-          this->Q_out.unshift(this->Q_out.size() + 2);
+          this->Q_out.insert(this->Q_out.begin(), this->Q_out.size() + 2);
 
           // Add CRC
-          this->Q_out.push(crc8(this->Q_out));
+          this->Q_out.push_back(crc8(this->Q_out));
 
           // Wrap telegram in SOF/EOF
-          this->Q_out.unshift(0x7E);
-          this->Q_out.push(0x7E);
+          this->Q_out.insert(this->Q_out.begin(), 0x7E);
+          this->Q_out.push_back(0x7E);
 
           for (i = 0; i < this->Q_out.size(); i++)
           {
@@ -221,7 +221,7 @@ namespace esphome
           this->Q_out.clear();
         }
 
-        // void BalboaSpa::print_msg(RingBuffer<uint8_t, 35> &data) {
+        // void BalboaSpa::print_msg(std::vector<uint8_t> &data) {
         //   std::string s;
         //   //for (i = 0; i < (this->Q_in[1] + 2); i++) {
         //   for (i = 0; i < data.size(); i++) {
@@ -650,17 +650,17 @@ namespace esphome
           while (available())
           {
             x = read();
-            this->Q_in.push(x);
+            this->Q_in.push_back(x);
 
             // Drop until SOF is seen
-            if (this->Q_in.first() != 0x7E)
+            if (this->Q_in.front() != 0x7E)
             {
               this->Q_in.clear();
             }
 
             // Double SOF-marker, drop last one
             if (this->Q_in[1] == 0x7E && this->Q_in.size() > 1)
-              this->Q_in.pop();
+              this->Q_in.erase(this->Q_in.begin());
 
             // Complete package
             // if (x == 0x7E && this->Q_in[0] == 0x7E && this->Q_in[1] != 0x7E) {
@@ -696,71 +696,71 @@ namespace esphome
                 // id BF 06:Ready to Send
                 if (send == 0x21)
                 {
-                  this->Q_out.push(id);
-                  this->Q_out.push(0xBF);
-                  this->Q_out.push(0x21);
-                  this->Q_out.push(sethour);
-                  this->Q_out.push(setminute);
+                  this->Q_out.push_back(id);
+                  this->Q_out.push_back(0xBF);
+                  this->Q_out.push_back(0x21);
+                  this->Q_out.push_back(sethour);
+                  this->Q_out.push_back(setminute);
                 }
                 else if (send == 0xff)
                 {
                   // 0xff marks dirty temperature for now
-                  this->Q_out.push(id);
-                  this->Q_out.push(0xBF);
-                  this->Q_out.push(0x20);
-                  this->Q_out.push(settemp);
+                  this->Q_out.push_back(id);
+                  this->Q_out.push_back(0xBF);
+                  this->Q_out.push_back(0x20);
+                  this->Q_out.push_back(settemp);
                 }
                 else if (send == 0x00)
                 {
                   if (have_config == 0)
                   { // Get configuration of the hot tub
-                    this->Q_out.push(id);
-                    this->Q_out.push(0xBF);
-                    this->Q_out.push(0x22);
-                    this->Q_out.push(0x00);
-                    this->Q_out.push(0x00);
-                    this->Q_out.push(0x01);
+                    this->Q_out.push_back(id);
+                    this->Q_out.push_back(0xBF);
+                    this->Q_out.push_back(0x22);
+                    this->Q_out.push_back(0x00);
+                    this->Q_out.push_back(0x00);
+                    this->Q_out.push_back(0x01);
                     ESP_LOGD("Spa/config/status", "Getting config");
                     have_config = 1;
                   }
                   else if (have_faultlog == 0)
                   { // Get the fault log
-                    this->Q_out.push(id);
-                    this->Q_out.push(0xBF);
-                    this->Q_out.push(0x22);
-                    this->Q_out.push(0x20);
-                    this->Q_out.push(0xFF);
-                    this->Q_out.push(0x00);
+                    this->Q_out.push_back(id);
+                    this->Q_out.push_back(0xBF);
+                    this->Q_out.push_back(0x22);
+                    this->Q_out.push_back(0x20);
+                    this->Q_out.push_back(0xFF);
+                    this->Q_out.push_back(0x00);
                     have_faultlog = 1;
                     ESP_LOGD("Spa/debug/have_faultlog", "requesting fault log, #1");
                   }
                   else if ((have_filtersettings == 0) && (have_faultlog == 2))
                   { // Get the filter cycles log once we have the faultlog
-                    this->Q_out.push(id);
-                    this->Q_out.push(0xBF);
-                    this->Q_out.push(0x22);
-                    this->Q_out.push(0x01);
-                    this->Q_out.push(0x00);
-                    this->Q_out.push(0x00);
+                    this->Q_out.push_back(id);
+                    this->Q_out.push_back(0xBF);
+                    this->Q_out.push_back(0x22);
+                    this->Q_out.push_back(0x01);
+                    this->Q_out.push_back(0x00);
+                    this->Q_out.push_back(0x00);
                     ESP_LOGD("Spa/debug/have_filtersettings", "requesting filter settings, #1");
                     have_filtersettings = 1;
                   }
                   else
                   {
                     // A Nothing to Send message is sent by a client immediately after a Clear to Send message if the client has no messages to send.
-                    this->Q_out.push(id);
-                    this->Q_out.push(0xBF);
-                    this->Q_out.push(0x07);
+                    this->Q_out.push_back(id);
+                    this->Q_out.push_back(0xBF);
+                    this->Q_out.push_back(0x07);
                   }
                 }
                 else
                 {
                   // Send toggle commands
-                  this->Q_out.push(id);
-                  this->Q_out.push(0xBF);
-                  this->Q_out.push(0x11);
-                  this->Q_out.push(send);
-                  this->Q_out.push(0x00);
+                  this->Q_out.push_back(id);
+                  this->Q_out.push_back(0xBF);
+                  this->Q_out.push_back(0x11);
+                  this->Q_out.push_back(send);
+                  this->Q_out.push_back(0x00);
                 }
 
                 rs485_send();
