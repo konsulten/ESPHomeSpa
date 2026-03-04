@@ -10,9 +10,8 @@ BalboaBinarySensor = balboa_spa_ns.class_("BalboaBinarySensor", binary_sensor.Bi
 
 CONF_BINARY_SENSOR_DATAPOINT= "binary_sensor_datapoint"
 CONFIG_SCHEMA = cv.All(
-    binary_sensor.BINARY_SENSOR_SCHEMA.extend(
+    binary_sensor.binary_sensor_schema(BalboaBinarySensor).extend(
         {
-            cv.GenerateID(): cv.declare_id(BalboaBinarySensor),
             cv.GenerateID(CONF_BALBOA_SPA_ID): cv.use_id(BalboaSpa),
             cv.Required(CONF_BINARY_SENSOR_DATAPOINT): cv.positive_int 
         }
