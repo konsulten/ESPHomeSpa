@@ -10,13 +10,12 @@ BalboaButton = balboa_spa_ns.class_("BalboaButton", button.Button, cg.Component)
 
 CONF_BUTTON_DATAPOINT= "button_datapoint"
 CONFIG_SCHEMA = cv.All(
-    button.BUTTON_SCHEMA.extend(
-        {
-            cv.GenerateID(): cv.declare_id(BalboaButton),
-            cv.GenerateID(CONF_BALBOA_SPA_ID): cv.use_id(BalboaSpa),
-            cv.Required(CONF_BUTTON_DATAPOINT): cv.positive_int 
-        }
-    ).extend(cv.COMPONENT_SCHEMA)
+    button.button_schema(BalboaButton)
+    .extend({cv.GenerateID(CONF_BALBOA_SPA_ID): cv.use_id(BalboaSpa)})
+    .extend({
+        cv.Required(CONF_BUTTON_DATAPOINT): cv.positive_int
+    })
+    .extend(cv.COMPONENT_SCHEMA)
 )
 async def to_code(config):
     parent = await cg.get_variable(config[CONF_BALBOA_SPA_ID])

@@ -1,7 +1,10 @@
 #pragma once
 
-#include <CircularBuffer.hpp>
+//#include <CircularBuffer.hpp>
+#include <memory>
+#include <vector>
 #include "esphome/core/component.h"
+#include "esphome/core/ring_buffer.h"
 #include "esphome/components/uart/uart.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
@@ -50,8 +53,8 @@ namespace esphome
       std::function<void(bool)>  blower_state_update_{nullptr};
       std::function<void(float)>  current_temp_state_update_{nullptr};
       std::function<void(float)>  target_temp_state_update_{nullptr};
-      CircularBuffer<uint8_t, 35> Q_in;
-      CircularBuffer<uint8_t, 35> Q_out;
+      std::vector<uint8_t> Q_in;
+      std::vector<uint8_t> Q_out;
       uint8_t x, i, j;
 
       uint8_t last_state_crc = 0x00;
@@ -123,11 +126,11 @@ namespace esphome
         uint8_t filt2DurationMinute : 6;
       } SpaFilterSettings;
 
-      uint8_t crc8(CircularBuffer<uint8_t, 35> &data);
+      uint8_t crc8(const std::vector<uint8_t> &data);
       void ID_request();
       void ID_ack();
       void rs485_send();
-      // void print_msg(CircularBuffer<uint8_t, 35> &data);
+      // void print_msg(const std::vector<uint8_t> &data);
       void decodeSettings();
       void decodeState();
       void decodeFilterSettings();
