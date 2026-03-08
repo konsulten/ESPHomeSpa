@@ -1,6 +1,5 @@
 #pragma once
 
-//#include <CircularBuffer.hpp>
 #include <memory>
 #include <vector>
 #include "esphome/core/component.h"
