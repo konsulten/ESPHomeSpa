@@ -13,7 +13,7 @@ esphome:
 esp32:
   board: esp32-c3-devkitm-1
   framework:
-    type: arduino
+    type: esp-idf
 
 # Enable logging
 logger:
@@ -67,17 +67,36 @@ binary_sensor:
   - platform: balboa_spa
     name: "Blower"
     binary_sensor_datapoint: 26
+  - platform: balboa_spa
+    name: "Heating Enabled"
+    binary_sensor_datapoint: 27
 
 balboa_spa:
   id: balboa_spa_id
   uart_id: spa_uart_bus
   fault_text_sensor:
     name: "Fault Message"
+  time_text_sensor:
+    name: "Spa Time"
+  heating_status_text_sensor:
+    name: "Heating Status"
   
 
 api:
   encryption:
     key: !secret api_key
+  services:
+    - service: set_spa_time
+      variables:
+        hour: int
+        minute: int
+      then:
+        - lambda: 'id(balboa_spa_id).on_set_time(hour, minute);'
+    - service: set_heater_enabled
+      variables:
+        enabled: bool
+      then:
+        - lambda: 'id(balboa_spa_id).set_heater_enabled(enabled);'
 
 ota:
   platform: esphome
