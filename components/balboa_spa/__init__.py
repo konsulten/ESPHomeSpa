@@ -3,7 +3,7 @@ import esphome.config_validation as cv
 from esphome.components import uart, sensor, binary_sensor, text_sensor
 from esphome.const import CONF_ID, DEVICE_CLASS_TEMPERATURE, UNIT_CELSIUS, STATE_CLASS_MEASUREMENT
 DEPENDENCIES = ['uart']
-AUTO_LOAD = ['uart', 'sensor', 'text_sensor', 'binary_sensor']
+AUTO_LOAD = ['uart', 'sensor', 'text_sensor', 'binary_sensor', 'ring_buffer']
 
 balboa_spa_ns = cg.esphome_ns.namespace('balboa_spa')
 
